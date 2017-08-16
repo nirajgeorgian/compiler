@@ -10,51 +10,74 @@ int yylineno = 0;                               // No input line at start
 lex() {
     static char input_buffer[128];               // taking input as buffer so to make it speedy
     char *current;                               // Hold the current context of text
-    while(true) {                                // infinite loop for parsing until the end
-        while(!*current) {                       // *current is a pointer stores *current = 0 = false and !false = true and while loop executes until false
+    while (true) {                                // infinite loop for parsing until the end
+        while (!*current) {                       // *current is a pointer stores *current = 0 = false and !false = true and while loop executes until false
             current = input_buffer;             // get the current line as buffed data
-            if(!gets(input_buffer)) {
+            if (!gets(input_buffer)) {
                 // no more input elements to get
                 *current = '\o';                 // input value set to null character
                 return EOI;
             }
             // now move to next line
             ++yylineno;
-            while(isspace(*current)) {           // till it is having space skip it and come to the end where the real parsing start
+            while (isspace(
+                    *current)) {           // till it is having space skip it and come to the end where the real parsing start
                 ++current;
             }
             // now we are at the  start of the statement from where we want to parse
-            for(; *current; ++current) {
+            for (; *current; ++current) {
                 // till the last token from the current statement execute all these codes
                 yytext = current;
                 yyleng = 1;
                 switch (*current) {
-                    case EOF: return EOI;
-                    case ';': return SEMI;
-                    case '+': return PLUS;
-                    case '*': return TIMES;
-                    case '(': return LP;
-                    case ')': return RP;
+                    case EOF:
+                        return EOI;
+                    case ';':
+                        return SEMI;
+                    case '+':
+                        return PLUS;
+                    case '*':
+                        return TIMES;
+                    case '(':
+                        return LP;
+                    case ')':
+                        return RP;
                     case '\n':
                     case '\t':
-                    case ' ': break;
+                    case ' ':
+                        break;
                     default:
                         // check if not an character or integer print it to stderr with some message
-                        if(!isalnum(*current)) {
-                            fprintf(stderr,"Ignoring illegal input value <%c>\n", *current);
+                        if (!isalnum(*current)) {
+                            fprintf(stderr, "Ignoring illegal input value <%c>\n", *current);
                         } else {
-                            while(isalnum(*current)) {
+                            while (isalnum(*current)) {
                                 ++current;
                             }
                             yyleng = current - yytext;
                             return NUM_OR_ID;
                         }
-                    break;
+                        break;
                 }
             }
         }
     }
-
+}
+// look ahead token
+// static data will hold it's previous return value after getting out of scope
+static int Lookahead = -1;                          // no input token ahead
+int token;
+int match(token) {
+    /* Returns true if "token" matches the current lookahead symbol. */
+    // still on next input token
+    if(Lookahead == -1) {
+        Lookahead = lex();
+    }
+    return token = Lookahead;
+}
+void advance() {
+    // Advance the look ahead to the next input symbol
+    Lookahead = lex();
 }
 
 int main() {
