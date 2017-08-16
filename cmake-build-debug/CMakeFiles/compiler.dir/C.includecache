@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/oooo/CLionProjects/compiler/lex.h
+
+/Users/oooo/CLionProjects/compiler/main.c
+lex.h
+/Users/oooo/CLionProjects/compiler/lex.h
+stdio.h
+-
+ctype.h
+-
+stdbool.h
+-
+
